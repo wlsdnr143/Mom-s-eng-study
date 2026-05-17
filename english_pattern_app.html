@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="영어 패턴">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f0f1a">
+<title>영어 패턴 학습</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;background:#0f0f1a}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#0f0f1a;
+  color:#eaeaea;
+  min-height:100vh;
+  min-height:-webkit-fill-available;
+  overflow-x:hidden;
+  user-select:none;
+  -webkit-user-select:none;
+}
+:root{
+  --bg:#0f0f1a;
+  --surf:#1a1a2e;
+  --surf2:#16213e;
+  --accent:#e94560;
+  --accent2:#0f3460;
+  --gold:#f5a623;
+  --teal:#4ecca3;
+  --text:#eaeaea;
+  --muted:#a0a0b8;
+  --border:rgba(255,255,255,0.06);
+  --r:15px;
+}
+
+.app{
+  max-width:430px;
+  margin:0 auto;
+  min-height:100vh;
+  min-height:-webkit-fill-available;
+  display:flex;
+  flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+}
+
+/* ── HEADER ── */
+.hd{
+  padding:18px 18px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;
+}
+.hd-left{}
+.hd-title{font-size:20px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
+.hd-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.hd-day{
+  font-size:11px;font-weight:700;
+  background:rgba(233,69,96,.15);color:var(--accent);
+  padding:6px 13px;border-radius:20px;
+  border:1px solid rgba(233,69,96,.25);
+}
+
+/* ── PROGRESS BAR ── */
+.pg-wrap{
+  margin:0 18px 12px;
+  background:var(--surf);border-radius:12px;
+  padding:10px 14px;
+  display:flex;align-items:center;gap:11px;
+  border:1px solid var(--border);
+  flex-shrink:0;
+}
+.pg-info{flex:1}
+.pg-lbl{font-size:10px;color:var(--muted);margin-bottom:5px}
+.pg-bar{height:5px;background:rgba(255,255,255,.07);border-radius:10px;overflow:hidden}
+.pg-fill{height:100%;background:var(--teal);border-radius:10px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.pg-pct{font-size:13px;font-weight:800;color:var(--teal);white-space:nowrap}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;margin:0 18px 12px;
+  background:var(--surf);border-radius:12px;
+  padding:3px;gap:3px;flex-shrink:0;
+}
+.tab{
+  flex:1;text-align:center;
+  font-size:11px;font-weight:700;
+  padding:9px 0;border-radius:9px;
+  color:var(--muted);cursor:pointer;
+  transition:all .2s;border:none;background:transparent;
+}
+.tab.on{background:var(--accent2);color:var(--teal)}
+
+/* ── SCROLL AREA ── */
+.scroll{
+  flex:1;overflow-y:auto;
+  padding:0 18px 24px;
+  -webkit-overflow-scrolling:touch;
+}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ── LEARN CARDS ── */
+.card{
+  background:var(--surf);border-radius:var(--r);
+  padding:18px 16px 14px;
+  position:relative;overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:12px;
+  transition:opacity .3s,transform .15s;
+}
+.card:active{transform:scale(.99)}
+.card-bar{
+  position:absolute;top:0;left:0;right:0;height:3px;
+  border-radius:var(--r) var(--r) 0 0;
+}
+.badge{
+  font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  display:inline-block;padding:2px 8px;border-radius:5px;margin-bottom:9px;
+}
+.badge.g{color:var(--teal);background:rgba(78,204,163,.1)}
+.badge.o{color:var(--gold);background:rgba(245,166,35,.1)}
+.pat{font-size:18px;font-weight:800;color:var(--text);margin-bottom:3px;letter-spacing:-.01em;line-height:1.25}
+.mean{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.ex-lbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);opacity:.5;margin-bottom:4px}
+.ex{
+  font-size:12px;color:var(--muted);
+  background:rgba(255,255,255,.03);
+  border-radius:8px;padding:9px 11px;line-height:1.7;
+}
+.ex b{color:var(--text);font-weight:700}
+.ex small{font-size:10px;opacity:.65}
+.memo-btn{
+  margin-top:10px;width:100%;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--muted);border-radius:9px;padding:9px;
+  font-size:11px;font-weight:700;text-align:center;cursor:pointer;
+  transition:all .2s;
+}
+.memo-btn:active{transform:scale(.98)}
+.memo-btn.done{color:var(--teal);border-color:rgba(78,204,163,.3);background:rgba(78,204,163,.06)}
+.card.memorized{opacity:.72}
+.memo-done-badge{
+  position:absolute;top:13px;right:13px;
+  font-size:9px;font-weight:700;
+  background:rgba(78,204,163,.12);color:var(--teal);
+  padding:3px 8px;border-radius:6px;
+  border:1px solid rgba(78,204,163,.2);
+  display:none;
+}
+.card.memorized .memo-done-badge{display:block}
+
+/* ── TEST ── */
+.test-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.test-qnum{font-size:12px;color:var(--muted);font-weight:600}
+.test-dots{display:flex;gap:6px}
+.tdot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.1);
+  transition:background .3s;
+}
+.tdot.curr{background:var(--muted);transform:scale(1.3)}
+.tdot.know{background:var(--teal)}
+.tdot.dunno{background:var(--accent)}
+
+.test-card{
+  background:var(--surf);border-radius:var(--r);
+  padding:32px 18px 24px;text-align:center;
+  border:1px solid var(--border);
+  margin-bottom:14px;
+}
+.test-lbl{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);opacity:.5;margin-bottom:10px}
+.test-ko{font-size:22px;font-weight:800;color:var(--text);line-height:1.35;margin-bottom:8px;letter-spacing:-.02em}
+.test-hint{
+  font-size:11px;color:var(--muted);
+  background:rgba(255,255,255,.04);
+  display:inline-block;padding:4px 12px;border-radius:20px;
+}
+.test-ans{
+  margin-top:16px;padding:14px 16px;
+  background:rgba(78,204,163,.07);border-radius:11px;
+  border:1px solid rgba(78,204,163,.2);
+  display:none;
+}
+.test-ans.show{display:block;animation:fadeUp .3s ease}
+.test-ans-en{font-size:19px;font-weight:800;color:var(--teal);margin-bottom:5px}
+.test-ans-ex{font-size:11px;color:var(--muted);line-height:1.6}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.btn-reveal{
+  width:100%;padding:15px;border-radius:12px;
+  border:none;background:var(--accent2);color:var(--teal);
+  font-size:15px;font-weight:800;cursor:pointer;
+  margin-bottom:10px;transition:transform .15s;letter-spacing:.01em;
+}
+.btn-reveal:active{transform:scale(.98)}
+.btn-row{display:none;gap:10px;margin-bottom:10px}
+.btn-row.show{display:flex}
+.btn-know,.btn-dunno{
+  flex:1;padding:14px;border-radius:12px;
+  border:none;font-size:14px;font-weight:800;cursor:pointer;
+  transition:transform .15s;
+}
+.btn-know{background:rgba(78,204,163,.15);color:var(--teal);border:1px solid rgba(78,204,163,.2)}
+.btn-dunno{background:rgba(233,69,96,.15);color:var(--accent);border:1px solid rgba(233,69,96,.2)}
+.btn-know:active,.btn-dunno:active{transform:scale(.97)}
+
+/* Test result */
+.test-result{
+  display:none;padding:32px 0 16px;text-align:center;
+}
+.test-result.show{display:block;animation:fadeUp .4s ease}
+.res-emoji{font-size:60px;margin-bottom:14px}
+.res-title{font-size:26px;font-weight:900;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
+.res-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.res-scores{display:flex;gap:12px;justify-content:center;margin-bottom:28px}
+.res-score{
+  background:var(--surf);border-radius:14px;
+  padding:18px 26px;border:1px solid var(--border);
+}
+.res-score-num{font-size:30px;font-weight:900;letter-spacing:-.02em}
+.res-score-lbl{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
+.res-score.know .res-score-num{color:var(--teal)}
+.res-score.dunno .res-score-num{color:var(--accent)}
+.btn-retry{
+  padding:14px 32px;border-radius:12px;
+  background:var(--accent2);color:var(--teal);
+  font-size:15px;font-weight:800;border:none;cursor:pointer;
+  transition:transform .15s;
+}
+.btn-retry:active{transform:scale(.98)}
+
+/* ── PROGRESS TAB ── */
+.stat-row{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;margin-bottom:12px;
+}
+.stat-card{
+  background:var(--surf);border-radius:12px;
+  padding:13px;border:1px solid var(--border);
+}
+.stat-lbl{font-size:10px;color:var(--muted);margin-bottom:4px}
+.stat-num{font-size:22px;font-weight:900}
+
+.month-grid{
+  background:var(--surf);border-radius:var(--r);
+  padding:14px;border:1px solid var(--border);
+  margin-bottom:12px;
+}
+.month-title{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:10px}
+.dots-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.dot{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.06)}
+.dot.done{background:var(--teal)}
+.dot.today{background:var(--gold)}
+
+.recent-list{
+  background:var(--surf);border-radius:var(--r);
+  padding:14px;border:1px solid var(--border);
+}
+.recent-title{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:10px}
+.recent-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);
+}
+.recent-item:last-child{border-bottom:none}
+.recent-pat{font-size:12px;font-weight:700;color:var(--text)}
+.recent-day{font-size:10px;color:var(--muted)}
+.rtag{font-size:9px;padding:2px 8px;border-radius:5px;font-weight:700}
+.rtag.g{background:rgba(78,204,163,.12);color:var(--teal)}
+.rtag.o{background:rgba(245,166,35,.12);color:var(--gold)}
+.rtag.r{background:rgba(233,69,96,.12);color:var(--accent)}
+
+/* ── HOME BAR ── */
+.home-bar{
+  height:calc(10px + env(safe-area-inset-bottom));
+  display:flex;justify-content:center;align-items:center;
+  flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);
+}
+.hline{width:36px;height:4px;background:rgba(255,255,255,.12);border-radius:4px}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="hd">
+    <div class="hd-left">
+      <div class="hd-title">영어 패턴 학습 ✦</div>
+      <div class="hd-sub">매일 2문장, 한 달 완성</div>
+    </div>
+    <div class="hd-day" id="hd-day">Day 1</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="pg-wrap">
+    <div class="pg-info">
+      <div class="pg-lbl" id="pg-lbl">이번 달 진행도 — 0 / 60 문장</div>
+      <div class="pg-bar"><div class="pg-fill" id="pg-fill" style="width:0%"></div></div>
+    </div>
+    <div class="pg-pct" id="pg-pct">0%</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab on" id="tab-learn" onclick="switchTab('learn')">📖 학습</button>
+    <button class="tab" id="tab-test" onclick="switchTab('test')">✏️ 테스트</button>
+    <button class="tab" id="tab-prog" onclick="switchTab('prog')">📅 진도</button>
+  </div>
+
+  <!-- ══ LEARN VIEW ══ -->
+  <div class="scroll" id="view-learn">
+    <div id="learn-cards"></div>
+  </div>
+
+  <!-- ══ TEST VIEW ══ -->
+  <div class="scroll hidden" id="view-test">
+    <div class="test-header">
+      <div class="test-qnum" id="test-qnum">문제 1 / 2</div>
+      <div class="test-dots" id="test-dots"></div>
+    </div>
+
+    <div id="test-q-area">
+      <div class="test-card">
+        <div class="test-lbl">한국어 의미</div>
+        <div class="test-ko" id="test-ko"></div>
+        <div><div class="test-hint" id="test-hint"></div></div>
+        <div class="test-ans" id="test-ans">
+          <div class="test-ans-en" id="test-ans-en"></div>
+          <div class="test-ans-ex" id="test-ans-ex"></div>
+        </div>
+      </div>
+      <button class="btn-reveal" id="btn-reveal" onclick="revealAns()">정답 확인하기 👀</button>
+      <div class="btn-row" id="btn-row">
+        <button class="btn-know" onclick="grade(true)">✓ 알았어요</button>
+        <button class="btn-dunno" onclick="grade(false)">✗ 몰랐어요</button>
+      </div>
+    </div>
+
+    <div class="test-result" id="test-result">
+      <div class="res-emoji" id="res-emoji"></div>
+      <div class="res-title" id="res-title"></div>
+      <div class="res-sub" id="res-sub"></div>
+      <div class="res-scores">
+        <div class="res-score know"><div class="res-score-num" id="res-know">0</div><div class="res-score-lbl">맞혔어요</div></div>
+        <div class="res-score dunno"><div class="res-score-num" id="res-dunno">0</div><div class="res-score-lbl">틀렸어요</div></div>
+      </div>
+      <button class="btn-retry" onclick="startTest()">다시 테스트 🔄</button>
+    </div>
+  </div>
+
+  <!-- ══ PROGRESS VIEW ══ -->
+  <div class="scroll hidden" id="view-prog">
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-lbl">연속 학습</div>
+        <div class="stat-num" id="streak-num" style="color:var(--gold)">0일 🔥</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">완료 문장</div>
+        <div class="stat-num" id="done-num" style="color:var(--teal)">0개</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-lbl">현재 Day</div>
+        <div class="stat-num" id="day-num" style="color:var(--accent)">1일</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">달성률</div>
+        <div class="stat-num" id="rate-num" style="color:var(--muted)">0%</div>
+      </div>
+    </div>
+    <div class="month-grid">
+      <div class="month-title">30일 학습 현황</div>
+      <div class="dots-grid" id="dots-grid"></div>
+    </div>
+    <div class="recent-list">
+      <div class="recent-title">최근 학습한 패턴</div>
+      <div id="recent-items"></div>
+    </div>
+  </div>
+
+  <div class="home-bar"><div class="hline"></div></div>
+</div>
+
+<script>
+const PATTERNS = [
+  {pat:"I was about to ___",ko:"막 ~하려던 참이었어",ex:"I was about to call you when you texted me.",exko:"네가 문자 보낼 때 마침 전화하려던 참이었어."},
+  {pat:"It's not like ___",ko:"~인 것도 아니잖아",ex:"It's not like we have to decide right now.",exko:"지금 당장 결정해야 하는 것도 아니잖아."},
+  {pat:"I ended up ___ing",ko:"결국 ~하게 됐어",ex:"I ended up staying home all day.",exko:"결국 하루 종일 집에 있었어."},
+  {pat:"I can't help ___ing",ko:"~하지 않을 수가 없어",ex:"I can't help laughing when I see that.",exko:"그걸 보면 웃지 않을 수가 없어."},
+  {pat:"That's why ___",ko:"그래서 ~한 거야",ex:"That's why I didn't tell you about it.",exko:"그래서 너한테 그 얘기 안 한 거야."},
+  {pat:"I feel like ___",ko:"~한 느낌이야 / ~하고 싶어",ex:"I feel like eating something sweet.",exko:"뭔가 단 게 먹고 싶어."},
+  {pat:"How come ___?",ko:"왜 ~한 거야?",ex:"How come you didn't show up yesterday?",exko:"어제 왜 안 나타난 거야?"},
+  {pat:"It turns out ___",ko:"알고 보니 ~더라고",ex:"It turns out she already knew about it.",exko:"알고 보니 그녀는 이미 알고 있더라고."},
+  {pat:"I'm supposed to ___",ko:"~하기로 되어 있어",ex:"I'm supposed to meet him at 3.",exko:"3시에 그를 만나기로 되어 있어."},
+  {pat:"I'm in the middle of ___",ko:"지금 ~하는 중이야",ex:"I'm in the middle of a meeting right now.",exko:"지금 회의 중이야."},
+  {pat:"I'd rather ___",ko:"차라리 ~하겠어",ex:"I'd rather stay in than go out tonight.",exko:"오늘 밤은 나가는 것보다 차라리 집에 있겠어."},
+  {pat:"I was wondering if ___",ko:"혹시 ~인지 궁금했어",ex:"I was wondering if you could help me.",exko:"혹시 나 좀 도와줄 수 있을지 궁금했어."},
+  {pat:"No wonder ___",ko:"~한 게 당연하지 / 어쩐지",ex:"No wonder you're tired — you didn't sleep!",exko:"피곤한 게 당연하지 — 잠을 못 잤잖아!"},
+  {pat:"I'm looking forward to ___",ko:"~가 정말 기대돼",ex:"I'm looking forward to the weekend.",exko:"주말이 정말 기대돼."},
+  {pat:"I wish I could ___",ko:"~할 수 있으면 좋겠어",ex:"I wish I could come with you.",exko:"같이 갈 수 있으면 좋겠어."},
+  {pat:"I'm used to ___",ko:"~에 익숙해",ex:"I'm used to waking up early.",exko:"일찍 일어나는 거 익숙해."},
+  {pat:"What if ___?",ko:"~하면 어떡하지? / ~하면 어때?",ex:"What if we just cancel the plan?",exko:"그냥 계획 취소하면 어때?"},
+  {pat:"I meant to ___",ko:"~하려고 했었어",ex:"I meant to call you but forgot.",exko:"전화하려고 했는데 깜빡했어."},
+  {pat:"I can't believe ___",ko:"~라니 믿기지 않아",ex:"I can't believe you did that.",exko:"네가 그런 걸 했다니 믿기지 않아."},
+  {pat:"It seems like ___",ko:"~인 것 같아",ex:"It seems like he's not coming.",exko:"그는 안 올 것 같아."},
+  {pat:"I'm about to ___",ko:"막 ~하려는 참이야",ex:"I'm about to leave. Can we talk later?",exko:"막 나가려는 참이야. 나중에 얘기할 수 있어?"},
+  {pat:"As long as ___",ko:"~하는 한 / ~이기만 하면",ex:"I'll be fine as long as you're with me.",exko:"네가 같이 있는 한 괜찮을 거야."},
+  {pat:"I can't wait to ___",ko:"~하는 게 너무 기다려져",ex:"I can't wait to see you again.",exko:"다시 만날 날이 너무 기다려져."},
+  {pat:"I'm not sure if ___",ko:"~인지 잘 모르겠어",ex:"I'm not sure if I can make it tonight.",exko:"오늘 밤 갈 수 있을지 잘 모르겠어."},
+  {pat:"I keep ___ing",ko:"자꾸 ~하게 돼",ex:"I keep forgetting where I put my keys.",exko:"열쇠를 어디 뒀는지 자꾸 까먹어."},
+  {pat:"The thing is, ___",ko:"있잖아, 사실은 ___",ex:"The thing is, I don't really like him.",exko:"있잖아, 사실 나는 그를 별로 안 좋아해."},
+  {pat:"I'd love to ___",ko:"~하면 정말 좋겠어",ex:"I'd love to travel abroad this year.",exko:"올해 해외여행 가면 정말 좋겠어."},
+  {pat:"Have you ever ___?",ko:"~해본 적 있어?",ex:"Have you ever tried Korean street food?",exko:"한국 길거리 음식 먹어본 적 있어?"},
+  {pat:"I think I need to ___",ko:"~해야 할 것 같아",ex:"I think I need to take a break.",exko:"잠깐 쉬어야 할 것 같아."},
+  {pat:"It doesn't matter ___",ko:"~는 상관없어",ex:"It doesn't matter what they think.",exko:"그들이 뭐라고 생각하든 상관없어."},
+  {pat:"I feel bad about ___",ko:"~에 대해 미안한 느낌이야",ex:"I feel bad about missing your call.",exko:"전화를 못 받아서 미안해."},
+  {pat:"I never thought ___",ko:"~할 거라고 생각 못 했어",ex:"I never thought I'd enjoy running.",exko:"달리기를 즐기게 될 거라고 생각 못 했어."},
+  {pat:"Why don't we ___?",ko:"우리 ~하는 게 어때?",ex:"Why don't we grab some coffee?",exko:"커피 마시러 가는 게 어때?"},
+  {pat:"You'd better ___",ko:"~하는 게 좋을 거야",ex:"You'd better get some rest tonight.",exko:"오늘 밤 좀 쉬는 게 좋을 거야."},
+  {pat:"I can't afford to ___",ko:"~할 여유가 없어",ex:"I can't afford to make another mistake.",exko:"실수를 또 할 여유가 없어."},
+  {pat:"It's worth ___ing",ko:"~할 가치가 있어",ex:"It's worth trying at least once.",exko:"적어도 한 번은 시도해볼 가치가 있어."},
+  {pat:"I happen to ___",ko:"우연히 / 마침 ~하다",ex:"I happen to know his phone number.",exko:"마침 그의 전화번호를 알고 있어."},
+  {pat:"Let me know if ___",ko:"~하면 알려줘",ex:"Let me know if you need anything.",exko:"뭔가 필요하면 알려줘."},
+  {pat:"I could use ___",ko:"~가 있으면 좋겠어 / 필요해",ex:"I could use some help right now.",exko:"지금 도움이 좀 있으면 좋겠어."},
+  {pat:"Is it okay if ___?",ko:"~해도 괜찮아?",ex:"Is it okay if I leave a bit early?",exko:"조금 일찍 나가도 괜찮아?"},
+  {pat:"I'm dying to ___",ko:"~하고 싶어 죽겠어",ex:"I'm dying to know what happened.",exko:"무슨 일이 있었는지 너무 알고 싶어."},
+  {pat:"It's about time ___",ko:"이제 ~할 때가 됐지",ex:"It's about time you got a new phone.",exko:"이제 새 폰 살 때가 됐지."},
+  {pat:"I'm tired of ___",ko:"~에 지쳤어",ex:"I'm tired of making the same mistakes.",exko:"같은 실수를 반복하는 것에 지쳤어."},
+  {pat:"There's no point in ___",ko:"~해봤자 소용없어",ex:"There's no point in arguing anymore.",exko:"더 이상 다퉈봤자 소용없어."},
+  {pat:"I'm having trouble ___ing",ko:"~하는 게 힘들어",ex:"I'm having trouble sleeping these days.",exko:"요즘 잠자는 게 힘들어."},
+  {pat:"I'm looking for ___",ko:"~을 찾고 있어",ex:"I'm looking for a good place to eat.",exko:"좋은 식당을 찾고 있어."},
+  {pat:"It's hard to ___",ko:"~하기 어려워",ex:"It's hard to say no to him.",exko:"그에게 거절하기 어려워."},
+  {pat:"I get to ___",ko:"~할 수 있게 됐어 / ~할 기회가 생겼어",ex:"I get to work from home this week.",exko:"이번 주는 재택근무를 할 수 있게 됐어."},
+  {pat:"I don't feel like ___ing",ko:"~하고 싶지 않아",ex:"I don't feel like cooking tonight.",exko:"오늘 밤은 요리하고 싶지 않아."},
+  {pat:"What do you say we ___?",ko:"우리 ~하는 거 어때?",ex:"What do you say we take a day off?",exko:"우리 하루 쉬는 거 어때?"},
+  {pat:"I promise I'll ___",ko:"꼭 ~할게",ex:"I promise I'll be more careful.",exko:"더 조심할게, 약속해."},
+  {pat:"I'm glad ___",ko:"~해서 다행이야",ex:"I'm glad you told me about it.",exko:"나한테 얘기해줘서 다행이야."},
+  {pat:"I appreciate ___",ko:"~에 감사해",ex:"I appreciate you being here for me.",exko:"내 곁에 있어줘서 감사해."},
+  {pat:"I realize ___",ko:"~라는 걸 깨달았어",ex:"I realize I've been too hard on myself.",exko:"내 자신에게 너무 가혹했다는 걸 깨달았어."},
+  {pat:"I wonder if ___",ko:"~인지 궁금해",ex:"I wonder if she knows the truth.",exko:"그녀가 진실을 알고 있는지 궁금해."},
+  {pat:"I'd say ___",ko:"아마 ~일 것 같아 / ~라고 하겠어",ex:"I'd say it takes about an hour.",exko:"아마 한 시간 정도 걸릴 것 같아."},
+  {pat:"Go ahead and ___",ko:"어서 ~해 / 그냥 ~해",ex:"Go ahead and start without me.",exko:"나 기다리지 말고 먼저 시작해."},
+  {pat:"Make sure to ___",ko:"꼭 ~해",ex:"Make sure to bring your ID.",exko:"신분증 꼭 챙겨."},
+  {pat:"I'm about to give up on ___",ko:"~를 포기하려던 참이야",ex:"I'm about to give up on this project.",exko:"이 프로젝트 포기하려던 참이야."},
+  {pat:"Turns out ___",ko:"알고 보니 ~였어",ex:"Turns out he was right all along.",exko:"알고 보니 그가 처음부터 맞았던 거야."},
+  {pat:"I've been meaning to ___",ko:"~하려고 생각하고 있었어",ex:"I've been meaning to call you for weeks.",exko:"몇 주째 전화하려고 생각하고 있었어."},
+  {pat:"You're telling me ___?",ko:"~라는 말이야? (놀람)",ex:"You're telling me you've never seen that movie?",exko:"그 영화를 한 번도 본 적 없다는 말이야?"},
+];
+
+const STORAGE_KEY = 'eng_pattern_v2';
+
+function load() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) return JSON.parse(raw);
+  return { memorized: [], lastDate: null, streak: 0, testHistory: [] };
+}
+function save(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+function getToday() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getDayNum() {
+  const data = load();
+  const start = data.startDate;
+  if (!start) return 1;
+  const diff = Math.floor((new Date(getToday()) - new Date(start)) / 86400000);
+  return Math.max(1, diff + 1);
+}
+
+function getTodayPatterns() {
+  const data = load();
+  if (!data.startDate) {
+    data.startDate = getToday();
+    save(data);
+  }
+  const day = getDayNum();
+  const i = (day - 1) * 2;
+  return [
+    { ...PATTERNS[i % PATTERNS.length], idx: i % PATTERNS.length },
+    { ...PATTERNS[(i+1) % PATTERNS.length], idx: (i+1) % PATTERNS.length }
+  ];
+}
+
+function updateStreak() {
+  const data = load();
+  const today = getToday();
+  if (data.lastDate === today) return;
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = yesterday.toISOString().slice(0,10);
+  if (data.lastDate === yStr) {
+    data.streak = (data.streak || 0) + 1;
+  } else if (data.lastDate !== today) {
+    data.streak = 1;
+  }
+  data.lastDate = today;
+  save(data);
+}
+
+// ── INIT ──
+updateStreak();
+const appData = load();
+const todayPatterns = getTodayPatterns();
+const dayNum = getDayNum();
+
+// Header day
+document.getElementById('hd-day').textContent = 'Day ' + dayNum;
+
+// Progress
+function updateProgress() {
+  const data = load();
+  const done = data.memorized ? data.memorized.length : 0;
+  const pct = Math.round((done / 60) * 100);
+  document.getElementById('pg-lbl').textContent = `이번 달 진행도 — ${done} / 60 문장`;
+  document.getElementById('pg-fill').style.width = pct + '%';
+  document.getElementById('pg-pct').textContent = pct + '%';
+}
+updateProgress();
+
+// ── TAB SWITCHING ──
+function switchTab(t) {
+  ['learn','test','prog'].forEach(id => {
+    document.getElementById('view-'+id).classList.toggle('hidden', id !== t);
+    document.getElementById('tab-'+id).classList.toggle('on', id === t);
+  });
+  if (t === 'test') startTest();
+  if (t === 'prog') renderProgress();
+}
+
+// ── LEARN ──
+function renderLearn() {
+  const data = load();
+  const colors = ['g','o'];
+  const barColors = ['#4ecca3','#f5a623'];
+  const nums = ['1번','2번'];
+
+  const html = todayPatterns.map((p, i) => {
+    const done = data.memorized && data.memorized.includes(p.idx);
+    return `
+    <div class="card${done?' memorized':''}" id="card-${i}">
+      <div class="card-bar" style="background:${barColors[i]}"></div>
+      <div class="memo-done-badge">✓ 암기완료</div>
+      <div class="badge ${colors[i]}">오늘 · ${nums[i]}</div>
+      <div class="pat">${p.pat}</div>
+      <div class="mean">${p.ko}</div>
+      <div class="ex-lbl">예문</div>
+      <div class="ex"><b>${highlightPattern(p.ex, p.pat)}</b><br><small>${p.exko}</small></div>
+      <button class="memo-btn${done?' done':''}" onclick="toggleMemo(${p.idx}, ${i})">
+        ${done ? '✓ 암기 취소' : '암기했어요'}
+      </button>
+    </div>`;
+  }).join('');
+  document.getElementById('learn-cards').innerHTML = html;
+}
+
+function highlightPattern(ex, pat) {
+  const keyword = pat.replace(' ___','').replace('___','').trim();
+  return ex;
+}
+
+function toggleMemo(idx, cardIdx) {
+  const data = load();
+  if (!data.memorized) data.memorized = [];
+  const pos = data.memorized.indexOf(idx);
+  if (pos > -1) {
+    data.memorized.splice(pos, 1);
+  } else {
+    data.memorized.push(idx);
+    if (!data.testHistory) data.testHistory = [];
+    data.testHistory.unshift({ idx, date: getToday() });
+    if (data.testHistory.length > 20) data.testHistory = data.testHistory.slice(0,20);
+  }
+  save(data);
+  updateProgress();
+  renderLearn();
+}
+
+renderLearn();
+
+// ── TEST ──
+let testIdx = 0, testScores = {know:0, dunno:0}, testRevealed = false;
+
+function startTest() {
+  testIdx = 0;
+  testScores = {know:0, dunno:0};
+  testRevealed = false;
+
+  document.getElementById('test-result').classList.remove('show');
+  document.getElementById('test-q-area').style.display = 'block';
+
+  renderDots();
+  loadTestQ();
+}
+
+function renderDots() {
+  const dots = todayPatterns.map((_, i) => {
+    let cls = 'tdot';
+    if (i < testIdx) cls += testScores[i] ? ' know' : ' dunno';
+    else if (i === testIdx) cls += ' curr';
+    return `<div class="${cls}"></div>`;
+  });
+  document.getElementById('test-dots').innerHTML = dots.join('');
+}
+
+const dotResults = {};
+
+function loadTestQ() {
+  if (testIdx >= todayPatterns.length) { showResult(); return; }
+  testRevealed = false;
+  const p = todayPatterns[testIdx];
+  document.getElementById('test-qnum').textContent = `문제 ${testIdx+1} / ${todayPatterns.length}`;
+  document.getElementById('test-ko').textContent = p.ko;
+  const hint = p.pat.replace('___', '___');
+  document.getElementById('test-hint').textContent = '힌트: ' + hint;
+  document.getElementById('test-ans').classList.remove('show');
+  document.getElementById('test-ans-en').textContent = p.pat;
+  document.getElementById('test-ans-ex').textContent = p.ex + '  ' + p.exko;
+  document.getElementById('btn-reveal').style.display = 'block';
+  document.getElementById('btn-row').classList.remove('show');
+  renderDots();
+}
+
+function revealAns() {
+  if (testRevealed) return;
+  testRevealed = true;
+  document.getElementById('test-ans').classList.add('show');
+  document.getElementById('btn-reveal').style.display = 'none';
+  document.getElementById('btn-row').classList.add('show');
+}
+
+function grade(knew) {
+  dotResults[testIdx] = knew;
+  if (knew) testScores.know++; else testScores.dunno++;
+  testIdx++;
+  loadTestQ();
+}
+
+function showResult() {
+  document.getElementById('test-q-area').style.display = 'none';
+  const r = document.getElementById('test-result');
+  r.classList.add('show');
+  const total = todayPatterns.length;
+  const pct = Math.round((testScores.know / total) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 50 ? '🎉' : '💪';
+  const title = pct === 100 ? '완벽해요!' : pct >= 50 ? '잘 하셨어요!' : '다시 도전해봐요!';
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-sub').textContent = `오늘 패턴 ${total}개 중 ${testScores.know}개 맞혔어요`;
+  document.getElementById('res-know').textContent = testScores.know;
+  document.getElementById('res-dunno').textContent = testScores.dunno;
+}
+
+// ── PROGRESS ──
+function renderProgress() {
+  const data = load();
+  const done = data.memorized ? data.memorized.length : 0;
+  const pct = Math.round((done / 60) * 100);
+
+  document.getElementById('streak-num').textContent = (data.streak || 1) + '일 🔥';
+  document.getElementById('done-num').textContent = done + '개';
+  document.getElementById('day-num').textContent = dayNum + '일';
+  document.getElementById('rate-num').textContent = pct + '%';
+
+  // 30-day dots
+  const grid = document.getElementById('dots-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement('div');
+    const dayI = i + 1;
+    d.className = 'dot' + (dayI < dayNum ? ' done' : dayI === dayNum ? ' today' : '');
+    grid.appendChild(d);
+  }
+
+  // Recent
+  const history = data.testHistory || [];
+  const recentEl = document.getElementById('recent-items');
+  if (history.length === 0) {
+    recentEl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 0">아직 학습한 패턴이 없어요</div>';
+    return;
+  }
+  recentEl.innerHTML = history.slice(0, 6).map(h => {
+    const p = PATTERNS[h.idx];
+    const isMem = data.memorized && data.memorized.includes(h.idx);
+    return `
+    <div class="recent-item">
+      <div>
+        <div class="recent-pat">${p.pat}</div>
+        <div class="recent-day">${p.ko}</div>
+      </div>
+      <span class="rtag ${isMem ? 'g' : 'o'}">${isMem ? '암기' : '복습중'}</span>
+    </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>
